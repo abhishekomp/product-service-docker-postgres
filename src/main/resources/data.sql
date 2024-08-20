@@ -1,0 +1,1 @@
+insert into product(prod_num, p_name, sku_code) values (1, 'Apple', 'APP2024');

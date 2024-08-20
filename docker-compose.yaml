@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:16
+    container_name: db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PWD}
+      POSTGRES_DB: productDb
+  backend:
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/productDb
+      SERVER_PORT: 8081
+    build:
+      dockerfile: Dockerfile
+    container_name: product_service_con
+    ports:
+      - 8081:8081
+    restart: always
+
