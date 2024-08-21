@@ -6,7 +6,7 @@
 - It uses Docker compose to run the Spring Boot app connected to Postgres DB with all of these running in their own separate containers.
 
 # Steps to run the project
-Step 0: Make sure docker is installed and running.
+Step 0: Make sure docker is installed and running.  
 Step 1: Build the project to create the .jar file (`./mvnw clean package -DskipTests`) (If needed, `chmod +x mvnw`)  
 Step 2: Set the environment variable for Postgres DB password like this  
 `export POSTGRES_DB_PWD=admin`   
