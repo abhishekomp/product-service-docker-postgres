@@ -27,6 +27,11 @@ public class Product {
         this.skuCode = skuCode;
     }
 
+    public Product(String pName, String skuCode) {
+        this.pName = pName;
+        this.skuCode = skuCode;
+    }
+
     public String getpName() {
         return pName;
     }
