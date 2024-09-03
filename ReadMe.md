@@ -5,7 +5,15 @@
 - This project demonstrates starting a Spring Boot app in a docker container.  
 - It uses Docker compose to run the Spring Boot app connected to Postgres DB with all of these running in their own separate containers.
 
-# Steps to run the project
+# Updated Simple Steps to run the project
+Step 0: Make sure docker is installed and running.
+Step 1: Set the environment variable for Postgres DB password like this  
+`export POSTGRES_DB_PWD=admin`
+Step 2: Run docker compose up:  
+`docker compose -f ./docker-compose.yaml up`
+- Note: The updated DockerFile has multi-stage build that produces the jar file to be used by docker compose
+
+# (Deprecated) Steps to run the project
 Step 0: Make sure docker is installed and running.  
 Step 1: Build the project to create the .jar file (`./mvnw clean package -DskipTests`) (If needed, `chmod +x mvnw`)  
 Step 2: Set the environment variable for Postgres DB password like this  
