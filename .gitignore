@@ -50,6 +50,7 @@ build/
 ### Logs ###
 *.log
 logs/
+!logs/.gitkeep
 
 ### Docker local overrides ###
 # docker-compose.override.yaml is a common pattern for local developer overrides

@@ -6,6 +6,8 @@ A learning project that demonstrates how to build a **REST API with Spring Boot*
 
 📖 **New to some of these concepts? Start here:** [Concepts.md](./Concepts.md) explains every term — Spring Boot, JPA, Docker, REST, MockMvc, AssertJ — with how they all connect in this project.
 
+📋 **HTTP Payload Logging:** [Payload-Logging.md](./Payload-Logging.md) — how incoming requests and outgoing responses are captured, where logs are stored, and how to read them.
+
 ---
 
 ## 🎯 What you will learn from this project
@@ -21,6 +23,7 @@ A learning project that demonstrates how to build a **REST API with Spring Boot*
 | Multi-stage Docker builds | `Dockerfile` |
 | Running multiple containers together with Docker Compose | `docker-compose.yaml` |
 | Integration testing with Testcontainers (4 different approaches) | `src/test/` |
+| HTTP payload logging (`OncePerRequestFilter`, `ContentCachingWrapper`, MDC) | `filter/PayloadLoggingFilter.java`, `logback-spring.xml` |
 | Seeding a database with `data.sql` | `src/main/resources/data.sql` |
 
 ---

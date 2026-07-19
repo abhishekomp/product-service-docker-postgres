@@ -17,9 +17,22 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_DB_PWD}
       SERVER_PORT: 8081
+      # Tell logback-spring.xml where to write the log files inside the container.
+      # /app/logs matches the WORKDIR in the Dockerfile — keeps everything under /app.
+      LOG_PATH: /app/logs
     build:
       dockerfile: Dockerfile
     container_name: product_service_con
     ports:
       - "8081:8081"
     restart: always
+    volumes:
+      # Mount the container's /app/logs directory to ./logs on your Mac.
+      # This means log files survive container restarts and can be read
+      # directly from your project folder without exec-ing into the container.
+      - ./logs:/app/logs
+
+# Named volume alternative (commented out) — stores logs in Docker-managed storage
+# instead of a host-mounted folder. Slightly safer but harder to browse.
+# volumes:
+#   app-logs:

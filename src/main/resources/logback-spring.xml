@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  logback-spring.xml — Spring Boot logging configuration.
+
+  Spring Boot loads this file automatically when it is named "logback-spring.xml"
+  (not "logback.xml") — the "-spring" suffix lets you use Spring-specific features
+  like <springProfile> to apply different config per environment.
+
+  Two appenders are configured:
+    1. CONSOLE — always active, writes to stdout (visible in docker logs / terminal)
+    2. FILE    — writes to a rolling log file (logs/app.log)
+
+  Both appenders are active so you can tail the file OR stream docker logs,
+  whichever is more convenient.
+-->
+
+<configuration>
+
+    <!-- ================================================================
+         LOG FORMAT PATTERN
+         ================================================================
+         %d{...}     — timestamp
+         [%X{requestId:-no-id}] — MDC value "requestId" inserted by PayloadLoggingFilter.
+                       Shows the short UUID for the request, making it trivial to grep
+                       all log lines belonging to one request.
+                       "-no-id" is the fallback when no requestId is in MDC.
+         [%thread]   — the thread name (e.g. "http-nio-8081-exec-3")
+         %-5level    — log level padded to 5 chars (INFO , WARN , ERROR)
+         %logger{36} — the logger class name, truncated to 36 chars
+         %msg        — the log message itself
+         %n          — newline
+    -->
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{requestId:---------}] [%thread] %-5level %logger{36} - %msg%n"/>
+
+    <!-- Log file location. /app/logs/ matches the WORKDIR in the Dockerfile.
+         When running locally (without Docker), logs go to ./logs/ in the project root. -->
+    <property name="LOG_PATH" value="${LOG_PATH:-logs}"/>
+    <property name="LOG_FILE" value="${LOG_PATH}/app.log"/>
+
+    <!-- ================================================================
+         APPENDER 1: CONSOLE
+         Writes every log line to standard output.
+         In Docker: visible via "docker logs product_service_con"
+         Locally: visible in your IDE or terminal
+         ================================================================ -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ================================================================
+         APPENDER 2: ROLLING FILE
+         Writes to logs/app.log and rolls the file automatically.
+
+         Rolling policy: time-based + size-based
+           - A new file is created every day (daily rollover)
+           - If a single day's file exceeds 10 MB, it rolls again within that day
+           - Files are kept for 30 days
+           - Total log storage is capped at 500 MB across all files
+           - Old files are automatically deleted when limits are exceeded
+         ================================================================ -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- The current (active) log file -->
+        <file>${LOG_FILE}</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Archived file naming pattern.
+                 %d{yyyy-MM-dd} — the date of the archived file
+                 %i             — index within that day (increments when size limit hit)
+                 .gz            — archived files are gzip-compressed automatically -->
+            <fileNamePattern>${LOG_PATH}/app-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+
+            <!-- Roll when a single file exceeds 10 MB -->
+            <maxFileSize>10MB</maxFileSize>
+
+            <!-- Keep rolled files for 30 days -->
+            <maxHistory>30</maxHistory>
+
+            <!-- Hard cap on total disk usage for all log files combined -->
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ================================================================
+         LOGGER LEVELS — third-party noise reduction
+         ================================================================ -->
+
+    <!-- Hibernate SQL logging — already controlled by spring.jpa.show-sql=true
+         but setting it here gives more control. DEBUG shows the SQL statements.
+         Set to WARN in production to reduce noise. -->
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+
+    <!-- Hibernate parameter binding — shows the actual values bound to ? placeholders.
+         Very useful for debugging, but can expose sensitive data.
+         Keep at WARN in production. -->
+    <logger name="org.hibernate.orm.jdbc.bind" level="WARN"/>
+
+    <!-- Spring framework internals — only show warnings -->
+    <logger name="org.springframework" level="WARN"/>
+
+    <!-- Our application code — INFO so all logger.info() calls are visible -->
+    <logger name="org.aom.product" level="INFO"/>
+
+    <!-- ================================================================
+         ROOT LOGGER
+         All loggers that don't have an explicit level above inherit this.
+         INFO means you see INFO, WARN, and ERROR — but not DEBUG or TRACE.
+         ================================================================ -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+    <!-- ================================================================
+         SPRING PROFILES — different config per environment
+         ================================================================ -->
+
+    <!-- In "dev" profile: enable DEBUG for our app code (more verbose locally) -->
+    <springProfile name="dev">
+        <logger name="org.aom.product" level="DEBUG"/>
+    </springProfile>
+
+    <!-- In "prod" profile: disable the payload logging filter to avoid
+         logging request/response bodies in production (security + performance) -->
+    <springProfile name="prod">
+        <logger name="org.aom.product.filter" level="WARN"/>
+    </springProfile>
+
+</configuration>
+
