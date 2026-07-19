@@ -8,16 +8,18 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_DB_PWD}
       POSTGRES_DB: productDb
+
   backend:
     depends_on:
       - db
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/productDb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_DB_PWD}
       SERVER_PORT: 8081
     build:
       dockerfile: Dockerfile
     container_name: product_service_con
     ports:
-      - 8081:8081
+      - "8081:8081"
     restart: always
-

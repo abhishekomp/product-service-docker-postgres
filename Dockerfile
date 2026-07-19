@@ -6,7 +6,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: For image creation
-FROM openjdk:17
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=buildstage /app/target/*.jar ./app.jar
 EXPOSE 8081

@@ -3,6 +3,7 @@ package org.aom.product.repository;
 import org.aom.product.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,6 +14,10 @@ import java.util.List;
  **/
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Integer> {
-    @Query("SELECT p FROM Product p where p.skuCode = 'SAM2024'")
+
+    @Query("SELECT p FROM Product p WHERE p.skuCode = 'SAM2024'")
     List<Product> findAllSamsungProducts();
+
+    @Query("SELECT p FROM Product p WHERE p.skuCode = :skuCode")
+    List<Product> findAllBySkuCode(@Param("skuCode") String skuCode);
 }

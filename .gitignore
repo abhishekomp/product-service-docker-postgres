@@ -31,3 +31,28 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### macOS ###
+# Finder metadata files created on every directory visited on a Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+### Environment / Secrets ###
+# Local environment variable files — NEVER commit these.
+# Create a .env file locally to store POSTGRES_DB_PWD and other secrets:
+#   echo "POSTGRES_DB_PWD=yourpassword" > .env
+# Docker Compose reads .env automatically.
+.env
+.env.*
+!.env.example
+
+### Logs ###
+*.log
+logs/
+
+### Docker local overrides ###
+# docker-compose.override.yaml is a common pattern for local developer overrides
+# (e.g. mounting source folders, changing ports) that should not be shared.
+docker-compose.override.yaml
+
