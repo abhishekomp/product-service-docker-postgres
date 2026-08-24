@@ -10,7 +10,7 @@ You have two GitHub accounts:
 
 | Account | Purpose |
 |---------|---------|
-| `Abhishek-Omprakash_evinova` | Company account — work projects |
+| `Abhishek-Omprakash` | work projects |
 | `abhishekomp` | Personal account — your own projects |
 
 You finish a learning project on your Mac. You set your local git identity to your personal account:
